@@ -12,10 +12,10 @@ var updateId = function(req, res, next) {
 };
 
 lionRouter.param('id', function(req, res, next, id) {
-  var todo = _.find(todos, {id: id});
+  var lion = _.find(lions, {id: id});
 
-  if (todo) {
-    req.todo = todo;
+  if (lion) {
+    req.lion = lion;
     next();
   } else {
     res.send();
@@ -27,7 +27,7 @@ lionRouter.get('/', function(req, res){
 });
 
 lionRouter.get('/:id', function(req, res){
-  var lion = req.todo;
+  var lion = req.lion;
   res.json(lion || {});
 });
 
