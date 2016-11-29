@@ -1,10 +1,9 @@
-// TODO: user app.params to find the lion using the id
+// TODO: user app.param to find the lion using the id
 // and then attach the lion to the req object and call next. Then in
 // '/lion/:id' just send back req.lion
 
 // create a middleware function to catch and handle errors, register it
 // as the last middleware on app
-
 
 // create a route middleware for POST /lions that will increment and
 // add an id to the incoming new lion object on req.body
@@ -20,6 +19,9 @@ var id = 0;
 
 var updateId = function(req, res, next) {
   // fill this out. this is the route middleware for the ids
+  id++;
+  req.body.id = id + '';
+  next();
 };
 
 app.use(morgan('dev'))
@@ -30,7 +32,16 @@ app.use(bodyParser.json());
 
 app.param('id', function(req, res, next, id) {
   // fill this out to find the lion based off the id
-  // and attach it to req.lion. Rember to call next()
+  // and attach it to req.lion. Remember to call next()
+  // this middleware allows me to know which lion I 
+  // have when the time comes where I have to call the id
+  var lion = _.find(lions, {id: id});
+  if(lion) {
+    req.lion = lion;
+    next();
+  } else {
+    res.send();
+  }
 });
 
 app.get('/lions', function(req, res){
@@ -46,15 +57,16 @@ app.post('/lions', updateId, function(req, res) {
   var lion = req.body;
 
   lions.push(lion);
-
+  // this is such that it appears on the page
   res.json(lion);
 });
 
 
 app.put('/lions/:id', function(req, res) {
   var update = req.body;
+  console.log(req.body);
   if (update.id) {
-    delete update.id
+    delete update.id;
   }
 
   var lion = _.findIndex(lions, {id: req.params.id});
@@ -63,6 +75,12 @@ app.put('/lions/:id', function(req, res) {
   } else {
     var updatedLion = _.assign(lions[lion], update);
     res.json(updatedLion);
+  }
+});
+
+app.use(function(err, req, res, next) {
+  if(err) {
+    res.status(500).send(err);
   }
 });
 
