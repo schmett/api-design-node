@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/puppies');
 
 // connect to a database so the below will work.
 // what's happening is that we're createing a new schema
