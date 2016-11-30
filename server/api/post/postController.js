@@ -17,6 +17,17 @@ exports.params = function(req, res, next, id) {
 
 exports.get = function(req, res, next) {
   // need to populate here
+  Post.find({})
+  // this is important because it reflects the fact
+  // that we have a relational database
+  // these are two fields: author and categories
+    .pupulate('author categories')
+    .exec()
+    .then(function(posts) {
+      res.json(posts);
+    }, function(err) {
+      next(err);
+    });
 };
 
 exports.getOne = function(req, res, next) {
